@@ -1,0 +1,34 @@
+name: Slither Analysis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  slither:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Slither
+        run: |
+          pip install slither-analyzer
+
+      - name: Run Slither
+        run: |
+          slither contracts --json slither.json || true
+
+      - name: Upload Slither report
+        uses: actions/upload-artifact@v4
+        with:
+          name: slither-report
+          path: slither.json
+          
